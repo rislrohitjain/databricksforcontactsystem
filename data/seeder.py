@@ -2,97 +2,89 @@ import uuid
 import random
 from datetime import datetime, timedelta, timezone
 from typing import List, Dict, Any
-from faker import Faker
 from database.postgres_client import postgres_client
 from database.databricks_client import databricks_client
 
-fake_in = Faker('en_IN')
-fake_gen = Faker()
-
-INDIAN_FIRST_NAMES = [
-    "Aarav", "Ananya", "Rajesh", "Priya", "Vikram", "Sunita", "Rohan", "Kavya", 
-    "Aditya", "Neha", "Arjun", "Pooja", "Suresh", "Divya", "Rahul", "Meera", 
-    "Amit", "Ritu", "Siddharth", "Sneha", "Manish", "Shreya", "Deepak", "Tanvi", 
-    "Alok", "Swati", "Nikhil", "Anish", "Ishita", "Varun", "Trisha", "Gaurav",
-    "Tarun", "Simran", "Abhishek", "Preeti", "Karan", "Bhavna", "Vishal", "Ridhi"
+JAIPUR_FIRST_NAMES = [
+    "Rohit", "Ankit", "Pooja", "Abhishek", "Ritu", "Suresh", "Sunita", "Vikas",
+    "Neha", "Deepak", "Priya", "Manish", "Suman", "Gaurav", "Meenakshi", "Amit",
+    "Divya", "Ajay", "Archana", "Dinesh", "Shweta", "Rajesh", "Kavita", "Sanjay",
+    "Richa", "Siddharth", "Aarti", "Yogesh", "Bhavna", "Karan", "Tanvi", "Nikhil",
+    "Swati", "Tarun", "Poonam", "Alok", "Shalini", "Virendra", "Sonam", "Hemant"
 ]
 
-INDIAN_LAST_NAMES = [
-    "Sharma", "Patel", "Kumar", "Iyer", "Singh", "Gupta", "Verma", "Rao", 
-    "Joshi", "Mehta", "Nair", "Reddy", "Deshmukh", "Agarwal", "Banerjee", "Chawla", 
-    "Mukherjee", "Kapoor", "Bhat", "Kulkarni", "Pillai", "Saxena", "Tripathi", "Chatterjee"
+JAIPUR_LAST_NAMES = [
+    "Sharma", "Agarwal", "Khandelwal", "Jain", "Maheshwari", "Rathore", "Shekhawat",
+    "Mathur", "Pareek", "Saxena", "Gupta", "Saini", "Chaudhary", "Meena", "Vijay",
+    "Goyal", "Modi", "Bhardwaj", "Tiwari", "Doshi", "Soni", "Rawat", "Jadaun", "Joshi"
 ]
 
-INDIAN_COMPANIES = [
-    ("Tata Consultancy Services", "tcs.com", "Artificial Intelligence & Tech", "$1B+"),
-    ("Infosys Technologies", "infosys.com", "Cloud Computing & SaaS", "$1B+"),
-    ("Wipro Limited", "wipro.com", "Artificial Intelligence & Tech", "$1B+"),
-    ("HCL Tech", "hcltech.com", "Cloud Computing & SaaS", "$1B+"),
-    ("Tech Mahindra", "techmahindra.com", "Artificial Intelligence & Tech", "$250M - $1B"),
-    ("Zoho Corporation", "zoho.com", "Cloud Computing & SaaS", "$250M - $1B"),
-    ("Freshworks India", "freshworks.com", "Cloud Computing & SaaS", "$50M - $250M"),
-    ("Reliance Industries & Jio", "jio.com", "Energy & Renewable Tech", "$1B+"),
-    ("HDFC Bank", "hdfcbank.com", "Financial Services & Banking", "$1B+"),
-    ("ICICI Bank", "icicibank.com", "Financial Services & Banking", "$1B+"),
-    ("Axis Bank", "axisbank.com", "Financial Services & Banking", "$1B+"),
-    ("Paytm / One97", "paytm.com", "Financial Services & Banking", "$250M - $1B"),
-    ("PhonePe India", "phonepe.com", "Financial Services & Banking", "$250M - $1B"),
-    ("Razorpay Software", "razorpay.com", "Financial Services & Banking", "$50M - $250M"),
-    ("Flipkart India", "flipkart.com", "Retail & E-Commerce", "$1B+"),
-    ("Swiggy Enterprise", "swiggy.in", "Retail & E-Commerce", "$250M - $1B"),
-    ("Zomato Ltd", "zomato.com", "Retail & E-Commerce", "$250M - $1B"),
-    ("Zepto Express", "zepto.in", "Retail & E-Commerce", "$50M - $250M"),
-    ("Ola Electric", "olaelectric.com", "Manufacturing & Logistics", "$250M - $1B"),
-    ("Ather Energy", "atherenergy.com", "Energy & Renewable Tech", "$50M - $250M"),
-    ("Sun Pharma", "sunpharma.com", "Healthcare & Biotechnology", "$1B+"),
-    ("Dr. Reddy's Labs", "drreddys.com", "Healthcare & Biotechnology", "$1B+"),
-    ("Biocon India", "biocon.com", "Healthcare & Biotechnology", "$250M - $1B"),
-    ("Larsen & Toubro", "larsentoubro.com", "Manufacturing & Logistics", "$1B+"),
-    ("Postman API", "postman.com", "Cloud Computing & SaaS", "$50M - $250M"),
-    ("BrowserStack", "browserstack.com", "Cloud Computing & SaaS", "$50M - $250M")
+JAIPUR_COMPANIES = [
+    ("AU Small Finance Bank HQ", "aubank.in", "Financial Services & Banking", "$1B+"),
+    ("Genpact India (Sitapura Jaipur)", "genpact.com", "Cloud Computing & SaaS", "$1B+"),
+    ("Infosys Jaipur (Mahindra World City)", "infosys.com", "Artificial Intelligence & Tech", "$1B+"),
+    ("Wipro IT (Sitapura SEZ Jaipur)", "wipro.com", "Artificial Intelligence & Tech", "$1B+"),
+    ("GirnarSoft / CarDekho HQ (Jaipur)", "cardekho.com", "Cloud Computing & SaaS", "$250M - $1B"),
+    ("Gravita India HQ (Jaipur)", "gravitaindia.com", "Manufacturing & Logistics", "$250M - $1B"),
+    ("Genus Power Infrastructures HQ (Jaipur)", "genuspower.com", "Energy & Renewable Tech", "$250M - $1B"),
+    ("Dotsquares Technologies (Jaipur)", "dotsquares.com", "Artificial Intelligence & Tech", "$50M - $250M"),
+    ("Teleperformance Jaipur", "teleperformance.com", "Cloud Computing & SaaS", "$250M - $1B"),
+    ("CultureAlley / Hello English (Jaipur)", "culturealley.com", "Artificial Intelligence & Tech", "$10M - $50M"),
+    ("DataInfosys Ltd (Jaipur)", "datainfosys.com", "Cloud Computing & SaaS", "$50M - $250M"),
+    ("Amrapali Jewels HQ (Jaipur)", "amrapalijewels.com", "Retail & E-Commerce", "$50M - $250M"),
+    ("Dainik Bhaskar Group HQ (Jaipur)", "dbcorp.in", "Retail & E-Commerce", "$250M - $1B"),
+    ("Fortis Escorts Hospital (Malviya Nagar Jaipur)", "fortishealthcare.com", "Healthcare & Biotechnology", "$250M - $1B"),
+    ("Eternal Hospital (Jagatpura Jaipur)", "eternalhospital.com", "Healthcare & Biotechnology", "$50M - $250M"),
+    ("Rajasthan Renewable Energy Corp (Jaipur)", "rrec.rajasthan.gov.in", "Energy & Renewable Tech", "$250M - $1B"),
+    ("HDFC Bank (C-Scheme Ashok Marg Jaipur)", "hdfcbank.com", "Financial Services & Banking", "$1B+"),
+    ("ICICI Bank (MI Road Jaipur)", "icicibank.com", "Financial Services & Banking", "$1B+"),
+    ("Voylla Fashions (Jaipur)", "voylla.com", "Retail & E-Commerce", "$10M - $50M"),
+    ("Pinkcity Handicrafts (Sitapura Jaipur)", "pinkcitycrafts.in", "Retail & E-Commerce", "$10M - $50M")
 ]
 
-INDIAN_CITIES = [
-    ("Bengaluru", "India", "APAC"),
-    ("Mumbai", "India", "APAC"),
-    ("Gurgaon / NCR", "India", "APAC"),
-    ("Hyderabad", "India", "APAC"),
-    ("Pune", "India", "APAC"),
-    ("Chennai", "India", "APAC"),
-    ("Noida / NCR", "India", "APAC"),
-    ("Ahmedabad", "India", "APAC"),
-    ("Kolkata", "India", "APAC"),
-    ("Jaipur", "India", "APAC")
+JAIPUR_LOCALITIES = [
+    "Malviya Nagar, Jaipur",
+    "Mansarovar, Jaipur",
+    "C-Scheme, Jaipur",
+    "Vaishali Nagar, Jaipur",
+    "Sitapura Industrial Area, Jaipur",
+    "Mahindra World City SEZ, Jaipur",
+    "MI Road, Jaipur",
+    "Tonk Road, Jaipur",
+    "Raja Park, Jaipur",
+    "Jagatpura, Jaipur",
+    "Vidhyadhar Nagar, Jaipur",
+    "Bani Park, Jaipur"
 ]
 
-INDIAN_TITLES = [
+JAIPUR_TITLES = [
     "Chief Technology Officer (CTO)",
-    "VP of Engineering",
-    "Head of AI & ML Labs",
-    "Director of Data Engineering",
+    "VP of Engineering & Architecture",
+    "Head of AI & Data Analytics",
+    "Director of Cloud Operations",
     "Lead Enterprise Architect",
-    "Senior Cloud Infrastructure Lead",
+    "Senior Data Infrastructure Lead",
     "Director of Product Engineering",
     "Head of Cyber Security & SecOps",
-    "AVP Enterprise Solutions",
-    "Principal Data Scientist"
+    "AVP Enterprise Banking Solutions",
+    "Principal Software Architect"
 ]
 
 LEAD_STATUSES = ["New Lead", "In Progress", "Qualified", "Nurturing", "Closed Won"]
 
-def generate_indian_contacts(count: int = 5000) -> List[Dict[str, Any]]:
+def generate_jaipur_contacts(count: int = 10000) -> List[Dict[str, Any]]:
     contacts = []
     base_time = datetime.now(timezone.utc)
-    phone_prefixes = ["98200", "99800", "97110", "98450", "98765", "99000", "98100", "96500", "99400", "97300"]
+    phone_prefixes = ["98290", "94140", "98280", "99280", "97830", "96100", "98291", "94141", "98281", "99281"]
 
-    for _ in range(count):
-        first_name = random.choice(INDIAN_FIRST_NAMES)
-        last_name = random.choice(INDIAN_LAST_NAMES)
-        comp_info = random.choice(INDIAN_COMPANIES)
+    for i in range(count):
+        first_name = random.choice(JAIPUR_FIRST_NAMES)
+        last_name = random.choice(JAIPUR_LAST_NAMES)
+        comp_info = random.choice(JAIPUR_COMPANIES)
         company_name, domain, industry, rev_tier = comp_info
+        locality = random.choice(JAIPUR_LOCALITIES)
         
-        email = f"{first_name.lower()}.{last_name.lower()}{random.randint(10, 99)}@{domain}"
-        city, country, region = random.choice(INDIAN_CITIES)
+        email = f"{first_name.lower()}.{last_name.lower()}{random.randint(100, 999)}@{domain}"
         phone = f"+91 {random.choice(phone_prefixes)} {random.randint(10000, 99999)}"
 
         created_days_ago = random.randint(1, 365)
@@ -104,13 +96,13 @@ def generate_indian_contacts(count: int = 5000) -> List[Dict[str, Any]]:
             "last_name": last_name,
             "email": email,
             "phone": phone,
-            "company": f"{company_name} ({city})",
-            "title": random.choice(INDIAN_TITLES),
+            "company": f"{company_name} - {locality}",
+            "title": random.choice(JAIPUR_TITLES),
             "industry": industry,
-            "country": country,
-            "region": region,
+            "country": "India (Jaipur)",
+            "region": "APAC (Rajasthan)",
             "revenue_tier": rev_tier,
-            "engagement_score": round(random.uniform(45.0, 99.8), 1),
+            "engagement_score": round(random.uniform(40.0, 99.9), 1),
             "lead_status": random.choice(LEAD_STATUSES),
             "created_at": created_at,
             "updated_at": created_at + timedelta(days=random.randint(0, 15))
@@ -118,8 +110,8 @@ def generate_indian_contacts(count: int = 5000) -> List[Dict[str, Any]]:
         contacts.append(contact)
     return contacts
 
-def seed_database(count: int = 5000) -> Dict[str, Any]:
-    contacts = generate_indian_contacts(count)
+def seed_database(count: int = 10000) -> Dict[str, Any]:
+    contacts = generate_jaipur_contacts(count)
     pg_success = postgres_client.insert_contacts(contacts)
     databricks_client.sync_contacts(contacts)
     return {
@@ -130,5 +122,5 @@ def seed_database(count: int = 5000) -> Dict[str, Any]:
     }
 
 if __name__ == "__main__":
-    res = seed_database(5000)
-    print(f"Seeding 5,000 India-level entries completed: {res}")
+    res = seed_database(10000)
+    print(f"Seeding 10,000 Jaipur City enterprise entries completed: {res}")
