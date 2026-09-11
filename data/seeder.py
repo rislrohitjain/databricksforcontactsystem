@@ -34,12 +34,7 @@ JAIPUR_COMPANIES = [
     ("Amrapali Jewels HQ (Jaipur)", "amrapalijewels.com", "Retail & E-Commerce", "$50M - $250M"),
     ("Dainik Bhaskar Group HQ (Jaipur)", "dbcorp.in", "Retail & E-Commerce", "$250M - $1B"),
     ("Fortis Escorts Hospital (Malviya Nagar Jaipur)", "fortishealthcare.com", "Healthcare & Biotechnology", "$250M - $1B"),
-    ("Eternal Hospital (Jagatpura Jaipur)", "eternalhospital.com", "Healthcare & Biotechnology", "$50M - $250M"),
-    ("Rajasthan Renewable Energy Corp (Jaipur)", "rrec.rajasthan.gov.in", "Energy & Renewable Tech", "$250M - $1B"),
-    ("HDFC Bank (C-Scheme Ashok Marg Jaipur)", "hdfcbank.com", "Financial Services & Banking", "$1B+"),
-    ("ICICI Bank (MI Road Jaipur)", "icicibank.com", "Financial Services & Banking", "$1B+"),
-    ("Voylla Fashions (Jaipur)", "voylla.com", "Retail & E-Commerce", "$10M - $50M"),
-    ("Pinkcity Handicrafts (Sitapura Jaipur)", "pinkcitycrafts.in", "Retail & E-Commerce", "$10M - $50M")
+    ("Eternal Hospital (Jagatpura Jaipur)", "eternalhospital.com", "Healthcare & Biotechnology", "$50M - $250M")
 ]
 
 JAIPUR_LOCALITIES = [
@@ -53,8 +48,7 @@ JAIPUR_LOCALITIES = [
     "Tonk Road, Jaipur",
     "Raja Park, Jaipur",
     "Jagatpura, Jaipur",
-    "Vidhyadhar Nagar, Jaipur",
-    "Bani Park, Jaipur"
+    "Vidhyadhar Nagar, Jaipur"
 ]
 
 JAIPUR_TITLES = [
@@ -72,12 +66,12 @@ JAIPUR_TITLES = [
 
 LEAD_STATUSES = ["New Lead", "In Progress", "Qualified", "Nurturing", "Closed Won"]
 
-def generate_jaipur_contacts(count: int = 10000) -> List[Dict[str, Any]]:
+def generate_jaipur_contacts(count: int = 12000) -> List[Dict[str, Any]]:
     contacts = []
     base_time = datetime.now(timezone.utc)
-    phone_prefixes = ["98290", "94140", "98280", "99280", "97830", "96100", "98291", "94141", "98281", "99281"]
+    phone_prefixes = ["98290", "94140", "98280", "99280", "97830", "96100", "98291", "94141"]
 
-    for i in range(count):
+    for _ in range(count):
         first_name = random.choice(JAIPUR_FIRST_NAMES)
         last_name = random.choice(JAIPUR_LAST_NAMES)
         comp_info = random.choice(JAIPUR_COMPANIES)
@@ -110,17 +104,20 @@ def generate_jaipur_contacts(count: int = 10000) -> List[Dict[str, Any]]:
         contacts.append(contact)
     return contacts
 
-def seed_database(count: int = 10000) -> Dict[str, Any]:
+def seed_database(count: int = 12000) -> Dict[str, Any]:
+    start_t = datetime.now()
     contacts = generate_jaipur_contacts(count)
     pg_success = postgres_client.insert_contacts(contacts)
     databricks_client.sync_contacts(contacts)
+    elapsed_ms = round((datetime.now() - start_t).total_seconds() * 1000, 2)
     return {
         "status": "success",
         "count": len(contacts),
         "postgres_seeded": pg_success,
-        "databricks_synced": True
+        "databricks_synced": True,
+        "execution_time_ms": elapsed_ms
     }
 
 if __name__ == "__main__":
-    res = seed_database(10000)
-    print(f"Seeding 10,000 Jaipur City enterprise entries completed: {res}")
+    res = seed_database(12000)
+    print(f"Seeding 12,000 Jaipur City entries completed in {res['execution_time_ms']}ms: {res}")
