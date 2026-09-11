@@ -10,7 +10,50 @@ from agent.agent_team import agent_team
 from config import settings
 
 def render_overview_tab():
-    st.subheader("📊 Executive Contact Analytics & Pipeline KPI Overview")
+    st.subheader("📊 Executive Contact Analytics & Infrastructure Overview")
+
+    # Prominent Connection Details Banner on Root Page
+    pg_conn = postgres_client.is_connected()
+    db_conn = databricks_client.is_connected()
+    db_stats = databricks_client.get_lakehouse_stats()
+
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #161b22 0%, #1f242d 100%); border: 1px solid #30363d; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+        <div style="font-weight: 700; color: #58a6ff; font-size: 1.1rem; margin-bottom: 10px;">
+            🔌 Connected Databases & Live Infrastructure Status
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+            <div style="background: #0d1117; padding: 12px; border-radius: 6px; border-left: 4px solid #3fb950;">
+                <div style="color: #8b949e; font-size: 0.75rem; text-transform: uppercase;">Local Relational Engine</div>
+                <div style="color: #c9d1d9; font-weight: 700; font-size: 0.95rem;">🐘 PostgreSQL 18</div>
+                <div style="color: #8b949e; font-size: 0.8rem;">Host: <code>{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}</code></div>
+                <div style="color: #8b949e; font-size: 0.8rem;">Database: <code>{settings.POSTGRES_DB}</code> (User: <code>{settings.POSTGRES_USER}</code>)</div>
+                <div style="color: #3fb950; font-size: 0.8rem; font-weight: 600; margin-top: 4px;">
+                    ● Status: {'CONNECTED & LIVE' if pg_conn else 'ONLINE (In-Memory Fallback Active)'}
+                </div>
+            </div>
+            <div style="background: #0d1117; padding: 12px; border-radius: 6px; border-left: 4px solid #58a6ff;">
+                <div style="color: #8b949e; font-size: 0.75rem; text-transform: uppercase;">Cloud Warehouse Engine</div>
+                <div style="color: #c9d1d9; font-weight: 700; font-size: 0.95rem;">🌩️ Databricks SQL Lakehouse</div>
+                <div style="color: #8b949e; font-size: 0.8rem;">Host: <code>{settings.DATABRICKS_SERVER_HOSTNAME}</code></div>
+                <div style="color: #8b949e; font-size: 0.8rem;">Catalog/Schema: <code>{settings.DATABRICKS_CATALOG}.{settings.DATABRICKS_SCHEMA}</code></div>
+                <div style="color: #58a6ff; font-size: 0.8rem; font-weight: 600; margin-top: 4px;">
+                    ● Status: {db_stats['status']}
+                </div>
+            </div>
+            <div style="background: #0d1117; padding: 12px; border-radius: 6px; border-left: 4px solid #a371f7;">
+                <div style="color: #8b949e; font-size: 0.75rem; text-transform: uppercase;">Lead Engineer Attribution</div>
+                <div style="color: #c9d1d9; font-weight: 700; font-size: 0.95rem;">👨‍💻 {settings.DEV_NAME}</div>
+                <div style="color: #8b949e; font-size: 0.8rem;">Role: {settings.DEV_ROLE}</div>
+                <div style="margin-top: 6px;">
+                    <a href="{settings.DEV_URL}" target="_blank" style="color: #3fb950; font-weight: 600; font-size: 0.8rem; text-decoration: none;">
+                        🌐 Live Portfolio: rohitjain-resume.vercel.app ↗
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     metrics = postgres_client.get_metrics()
     c1, c2, c3, c4 = st.columns(4)
