@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     DATABRICKS_SERVER_HOSTNAME: str = "dbc-e68b8705-9d03.cloud.databricks.com"
     DATABRICKS_HTTP_PATH: str = "/sql/1.0/endpoints/YOUR_WAREHOUSE_HTTP_PATH"
     DATABRICKS_ACCESS_TOKEN: str = "YOUR_DATABRICKS_ACCESS_TOKEN"
-    DATABRICKS_CATALOG: str = "hive_metastore"
+    DATABRICKS_CATALOG: str = "workspace"
     DATABRICKS_SCHEMA: str = "default"
 
     # Developer Profile
