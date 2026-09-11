@@ -232,13 +232,13 @@ def render_admin_tab():
         """, unsafe_allow_html=True)
 
     st.markdown("<br/>", unsafe_allow_html=True)
-    st.markdown("#### ⚡ Seed Synthetic High-Density Contact Records")
-    seed_count = st.number_input("Number of global contacts to generate:", min_value=50, max_value=5000, value=250, step=50)
+    st.markdown("#### ⚡ Seed High-Density India-Level Contact Dataset")
+    seed_count = st.number_input("Number of realistic Indian enterprise contacts to generate:", min_value=100, max_value=20000, value=5000, step=500)
 
-    if st.button("🌱 Generate & Seed Dataset", type="primary"):
-        with st.spinner(f"Generating {seed_count} high-density global contact records..."):
+    if st.button("🌱 Generate & Seed 5,000+ Indian Contact Records", type="primary"):
+        with st.spinner(f"Generating {seed_count} realistic Indian enterprise contact records..."):
             res = seed_database(seed_count)
-            st.success(f"Successfully generated and seeded {res['count']} contacts to PostgreSQL 18 & Databricks!")
+            st.success(f"Successfully generated and seeded {res['count']} realistic Indian enterprise contacts to PostgreSQL 18 & Databricks!")
 
     df = postgres_client.get_contacts(limit=5000)
     if not df.empty:
