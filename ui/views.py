@@ -12,6 +12,46 @@ from config import settings
 def render_overview_tab():
     st.subheader("📊 Executive Contact Analytics & Infrastructure Overview")
 
+    # Bilingual Databricks Architecture Explanation Box & Expander
+    with st.expander("🌩️ Why Databricks SQL Lakehouse vs. PostgreSQL 18? / डेटाब्रिक्स क्यों और कैसे काम करता है? (English | हिंदी)", expanded=True):
+        lang = st.radio("Choose Language / भाषा चुनें:", ["🇬🇧 English", "🇮🇳 हिंदी"], horizontal=True)
+
+        if "English" in lang:
+            st.markdown("""
+            ### 🌩️ Why Databricks Lakehouse vs. PostgreSQL 18?
+            This application uses a **Hybrid Dual-Database Architecture** combining **PostgreSQL 18** (Local Relational OLTP) and **Databricks SQL Lakehouse** (Cloud Analytical OLAP).
+
+            #### 🔄 Architecture Flowchart
+            `1. Local Contact Entry` ➔ `2. PostgreSQL 18 (OLTP DB)` ➔ `3. Databricks Sync (Delta Lake / Parquet)` ➔ `4. Multi-Role AI Agent Analytics`
+            """)
+
+            comp_df = pd.DataFrame([
+                {"Metric / Feature": "Primary Workload", "🐘 Local PostgreSQL 18": "OLTP (Transactional - Single record inserts & updates)", "🌩️ Databricks SQL Lakehouse": "OLAP (Analytical - Complex queries across millions of rows)"},
+                {"Metric / Feature": "Data Storage Format", "🐘 Local PostgreSQL 18": "Row-based Relational Storage (B-Tree Indexes)", "🌩️ Databricks SQL Lakehouse": "Columnar Delta Lake / Apache Parquet format"},
+                {"Metric / Feature": "Query Speed on 10M+ Rows", "🐘 Local PostgreSQL 18": "Slower (Bounded by local server RAM & CPU cores)", "🌩️ Databricks SQL Lakehouse": "⚡ Blazing Fast (Distributed MPP Apache Spark cluster)"},
+                {"Metric / Feature": "AI Agent Integration", "🐘 Local PostgreSQL 18": "Basic SQL queries", "🌩️ Databricks SQL Lakehouse": "⚡ Native AI Vector Search, ML model training & Delta Lake governance"},
+                {"Metric / Feature": "Scalability", "🐘 Local PostgreSQL 18": "Vertical Scaling (Limited to local server size)", "🌩️ Databricks SQL Lakehouse": "⚡ Horizontal Auto-Scaling (Unlimited Cloud Compute)"}
+            ])
+            st.table(comp_df)
+
+        else:
+            st.markdown("""
+            ### 🌩️ डेटाब्रिक्स लेकहाउस क्यों? (Why Databricks Lakehouse?)
+            यह एप्लिकेशन एक **हाइब्रिड डुअल-डेटाबेस आर्किटेक्चर** का उपयोग करता है जो **PostgreSQL 18** (लोकल रिलेशनल DB) और **Databricks SQL Lakehouse** (क्लाउड लेकहाउस) को जोड़ता है।
+
+            #### 🔄 प्रक्रिया फ़्लोचार्ट (Architecture Flowchart)
+            `1. डेटा प्रविष्टि` ➔ `2. PostgreSQL 18 (OLTP DB)` ➔ `3. डेटाब्रिक्स सिंक (डेल्टा लेक / पारक्वेट)` ➔ `4. AI एजेंट्स एनालिटिक्स`
+            """)
+
+            comp_df_hi = pd.DataFrame([
+                {"विशेषता / मीट्रिक": "मुख्य कार्य (Workload)", "🐘 लोकल PostgreSQL 18": "OLTP (सिंगल रिकॉर्ड जोड़ना, अपडेट करना)", "🌩️ क्लाउड Databricks SQL Lakehouse": "OLAP (लाखों रिकॉर्ड्स पर जटिल विश्लेषण)"},
+                {"विशेषता / मीट्रिक": "डेटा स्टोरेज फॉर्मेट", "🐘 लोकल PostgreSQL 18": "रो-बेस्ड रिलेशनल स्टोरेज", "🌩️ क्लाउड Databricks SQL Lakehouse": "कॉलमनार डेल्टा लेक / पारक्वेट (Parquet) फॉर्मेट"},
+                {"विशेषता / मीट्रिक": "10 लाख+ डेटा पर स्पीड", "🐘 लोकल PostgreSQL 18": "धीमी (लोकल कंप्यूटर हार्डवेयर पर सीमित)", "🌩️ क्लाउड Databricks SQL Lakehouse": "⚡ अत्यधिक तेज़ (डिस्ट्रिब्यूटेड स्पार्क क्लास्टर)"},
+                {"विशेषता / मीट्रिक": "AI एजेंट इंटीग्रेशन", "🐘 लोकल PostgreSQL 18": "साधारण SQL प्रश्न", "🌩️ क्लाउड Databricks SQL Lakehouse": "⚡ नेटिव AI वेक्टर सर्च और मशीन लर्निंग गवर्नेंस"},
+                {"विशेषता / मीट्रिक": "स्केलेबिलिटी", "🐘 लोकल PostgreSQL 18": "सीमित (लोकल सर्वर साइज)", "🌩️ क्लाउड Databricks SQL Lakehouse": "⚡ असीमित (स्वचालित क्लाउड ऑटो-स्केलिंग)"}
+            ])
+            st.table(comp_df_hi)
+
     # Prominent Connection Details Banner on Root Page
     pg_conn = postgres_client.is_connected()
     db_conn = databricks_client.is_connected()
