@@ -277,32 +277,32 @@ class handler(BaseHTTPRequestHandler):
     <!-- TAB 1: EXECUTIVE OVERVIEW -->
     <div id="overview" class="tab-content active">
         <div class="kpi-grid">
-            <div class="kpi-card">
-                <div class="kpi-title">Jaipur Managed Contacts</div>
+            <div class="kpi-card" style="cursor: pointer; transition: transform 0.2s;" onclick="filterByCard('all')" title="Click to view all 10,000 Jaipur contacts in Directory">
+                <div class="kpi-title">Jaipur Managed Contacts 🔍</div>
                 <div class="kpi-value">10,000</div>
-                <div class="kpi-sub">Sitapura, MWC, C-Scheme & Malviya Nagar</div>
+                <div class="kpi-sub">Sitapura, MWC, C-Scheme & Malviya Nagar (Click to Filter)</div>
             </div>
-            <div class="kpi-card">
-                <div class="kpi-title">High-Value Leads</div>
+            <div class="kpi-card" style="cursor: pointer; transition: transform 0.2s;" onclick="filterByCard('high_value')" title="Click to filter High-Value Leads (Score >= 80.0)">
+                <div class="kpi-title">High-Value Leads ⚡</div>
                 <div class="kpi-value">2,480</div>
-                <div class="kpi-sub">Engagement Score ≥ 80.0</div>
+                <div class="kpi-sub">Engagement Score ≥ 80.0 (Click to Filter)</div>
             </div>
-            <div class="kpi-card">
-                <div class="kpi-title">Average Engagement</div>
+            <div class="kpi-card" style="cursor: pointer; transition: transform 0.2s;" onclick="filterByCard('high_value')" title="Click to inspect High Executive Interaction Index">
+                <div class="kpi-title">Average Engagement 📊</div>
                 <div class="kpi-value">86.2 / 100</div>
-                <div class="kpi-sub">High Executive Interaction Index</div>
+                <div class="kpi-sub">High Executive Interaction Index (Click to Filter)</div>
             </div>
-            <div class="kpi-card">
-                <div class="kpi-title">Top Jaipur Hub</div>
+            <div class="kpi-card" style="cursor: pointer; transition: transform 0.2s;" onclick="filterByCard('hub')" title="Click to filter Top Jaipur Hub contacts">
+                <div class="kpi-title">Top Jaipur Hub 🏢</div>
                 <div class="kpi-value" style="font-size: 1.2rem;">Malviya Nagar & Sitapura</div>
-                <div class="kpi-sub">IT & FinTech Density</div>
+                <div class="kpi-sub">IT & FinTech Density (Click to Filter)</div>
             </div>
         </div>
 
-        <div class="box">
+        <div class="box" style="cursor: pointer;" onclick="openModal()">
             <div class="box-title">
-                <span>🔌 Connected Infrastructure Status</span>
-                <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="openModal()">ℹ️ Databricks Architecture Info</button>
+                <span>🔌 Connected Infrastructure Status (Click to view Databricks Info & Flowchart)</span>
+                <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="event.stopPropagation(); openModal();">ℹ️ Databricks Architecture Info</button>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
                 <div style="background: #0d1117; padding: 14px; border-radius: 6px; border-left: 4px solid #3fb950;">
@@ -496,6 +496,27 @@ DEV_URL="https://rohitjain-resume.vercel.app/"
 
         function openModal() {{
             document.getElementById('databricksModal').style.display = 'flex';
+        }}
+
+        function filterByCard(type) {{
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            const dirBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.innerText.includes('Directory'));
+            if (dirBtn) dirBtn.classList.add('active');
+            document.getElementById('directory').classList.add('active');
+
+            const searchInput = document.getElementById('searchInput');
+            if (type === 'high_value') {{
+                searchInput.value = 'Qualified';
+                filterContacts();
+            }} else if (type === 'hub') {{
+                searchInput.value = 'Sitapura';
+                filterContacts();
+            }} else {{
+                searchInput.value = '';
+                renderTable(contacts);
+            }}
         }}
 
         // Initialize table on load
